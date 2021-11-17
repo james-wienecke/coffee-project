@@ -120,3 +120,9 @@ coffeeDiv.innerHTML = renderCoffees(coffees);
 // replaced submit button with active filtering when input in either field is changed
 roastSelection.addEventListener('input', updateCoffees);
 nameSearch.addEventListener('input', updateCoffees);
+
+// add a coffee form DOM linkups below here
+
+const roastAdd = document.querySelector('#roast-add');
+const nameAdd = document.querySelector('#name-add');
+const newCoffeeSubmit = document.querySelector('#submit-add');
