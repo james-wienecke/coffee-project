@@ -73,6 +73,19 @@ function matchName(coffee, search) {
     return (coffee.name.toLowerCase().indexOf(search) >= 0);
 }
 
+function addCoffee(e) {
+    e.preventDefault(); // DON'T submit form
+    let newCoffee = {
+        id: coffees.length + 1,
+        name: nameAdd.value,
+        roast: roastAdd.value
+    }
+    coffees.push(newCoffee);
+    document.querySelector('#add-form').reset();
+    document.querySelector('#search-form').reset();
+    coffeeDiv.innerHTML = renderCoffees(coffees);
+}
+
 /** things that are run when page first loads go under here
  */
 
@@ -126,3 +139,5 @@ nameSearch.addEventListener('input', updateCoffees);
 const roastAdd = document.querySelector('#roast-add');
 const nameAdd = document.querySelector('#name-add');
 const newCoffeeSubmit = document.querySelector('#submit-add');
+
+newCoffeeSubmit.addEventListener('click', addCoffee);
