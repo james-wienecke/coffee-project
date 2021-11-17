@@ -34,7 +34,7 @@ function updateCoffees(e) {
     var filteredCoffees = [];
     //                          coffee here is just a selector for each element inside coffeeS which is defined below
     coffees.forEach(function (coffee) {
-        if (matchRoast(coffee, selectedRoast) || matchName(coffee, selectedName)) {
+        if (matchRoast(coffee, selectedRoast) && matchName(coffee, selectedName)) {
             filteredCoffees.push(coffee);
         }
     });
@@ -45,6 +45,7 @@ function updateCoffees(e) {
 /** new functions go under here
  */
 function matchRoast(coffee, roast) {
+    if (roast === 'all roasts') return true;
     if (coffee.roast === roast) {
         return true;
     } else {
@@ -53,6 +54,7 @@ function matchRoast(coffee, roast) {
 }
 
 function matchName(coffee, search) {
+    if (search === '') return true;
     if (coffee.name.toLowerCase().indexOf(search) >= 0) {
         return true;
     } else {
