@@ -16,7 +16,7 @@ function renderCoffee(coffee) {
 // this function puts together all the new html code for displaying a table in the web page
 function renderCoffees(coffees) {
     var html = '';
-    for(var i = coffees.length - 1; i >= 0; i--) {
+    for (var i = coffees.length - 1; i >= 0; i--) {
         html += renderCoffee(coffees[i]);
     }
     return html;
@@ -33,8 +33,8 @@ function updateCoffees(e) {
     // filteredCoffees is created here empty and will be filled with coffees with data matching
     var filteredCoffees = [];
     //                          coffee here is just a selector for each element inside coffeeS which is defined below
-    coffees.forEach(function(coffee) {
-        if (coffee.roast === selectedRoast) {
+    coffees.forEach(function (coffee) {
+        if (matchRoast(coffee, selectedRoast) || matchName(coffee, selectedName)) {
             filteredCoffees.push(coffee);
         }
     });
@@ -44,7 +44,21 @@ function updateCoffees(e) {
 
 /** new functions go under here
  */
+function matchRoast(coffee, roast) {
+    if (coffee.roast === roast) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
+function matchName(coffee, search) {
+    if (coffee.name.toLowerCase().indexOf(search) >= 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 /** things that are run when page first loads go under here
  */
