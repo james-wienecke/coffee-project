@@ -16,7 +16,7 @@ function renderCoffee(coffee) {
 // this function puts together all the new html code for displaying a table in the web page
 function renderCoffees(coffees) {
     var html = '';
-    for (var i = coffees.length - 1; i >= 0; i--) {
+    for (var i = 0; i < coffees.length; i++) {
         html += renderCoffee(coffees[i]);
     }
     return html;
