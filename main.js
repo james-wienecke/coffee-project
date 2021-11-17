@@ -44,6 +44,15 @@ function updateCoffees(e) {
 
 /** new functions go under here
  */
+
+/** The matchRoast function takes a coffee object and a roast string and compares them, returning a
+ * boolean value corresponding to the two parameter's matching. Additionally, it exits early if the value
+ * selected by the user is 'all roasts' so as to enable the other search criteria to match in isolation.
+ *
+ * @param coffee            object, contains an id number, a name string, and a roast string
+ * @param roast             string, can be either any of the coffee roast values or 'all roasts'
+ * @returns {boolean}
+ */
 function matchRoast(coffee, roast) {
     if (roast === 'all roasts') return true;
     if (coffee.roast === roast) {
@@ -53,6 +62,16 @@ function matchRoast(coffee, roast) {
     }
 }
 
+/** The matchName function takes a coffee object and a roast string and compares them, returning a
+ * boolean value corresponding to the two parameter's matching. If the indexOf() method returns, -1,
+ * the search criteria the user specified does not match the coffee object currently being evaluated.
+ * Any result larger than -1 is considered a partial match, and the function returns true. Additionally,
+ * this function exits early if the search string is empty, to allow for pure roast filtering.
+ *
+ * @param coffee            object, contains an id number, a name string, and a roast string
+ * @param search            string, can be either any of the coffee roast values or 'all roasts'
+ * @returns {boolean}
+ */
 function matchName(coffee, search) {
     if (search === '') return true;
     if (coffee.name.toLowerCase().indexOf(search) >= 0) {
