@@ -73,6 +73,13 @@ function matchName(coffee, search) {
     return (coffee.name.toLowerCase().indexOf(search) >= 0);
 }
 
+/** The addCoffee function should only be run as an event fired from a button's click event. The e parameter is
+ * used to prevent a full default form submission. This function constructs a new coffee object from user's input
+ * and adds it to the existing coffee array with an appropriate ID. Next it refreshes the coffee display and
+ * clears all inputs to both forms.
+ *
+ * @param e
+ */
 function addCoffee(e) {
     e.preventDefault(); // DON'T submit form
     let newCoffee = {
