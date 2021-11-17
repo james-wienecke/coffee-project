@@ -105,3 +105,6 @@ coffeeDiv.innerHTML = renderCoffees(coffees);
 
 //when submitButton is clicked, updateCoffees runs
 submitButton.addEventListener('click', updateCoffees);
+
+roastSelection.addEventListener('input', updateCoffees);
+nameSearch.addEventListener('input', updateCoffees);
