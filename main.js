@@ -1,20 +1,13 @@
 "use strict"
 
-// This needs to be changed to divs
-// Can work with when we're changing the html so that this doesn't completely break
-// before we break it on purpose
-// for now it returns html code that displays ONE coffee's info in a row
+// it returns html code that displays ONE coffee's info in a div, name in <h4> and roast in <p>
 // this function is run by renderCoffees
 function renderCoffee(coffee) {
-    // var html = '<tr class="coffee">';
-    // html += '<td>' + coffee.name + '</td>';
-    // html += '<td>' + coffee.roast + '</td>';
-    // html += '</tr>';
     // each list in the list of of coffees we will display is simply going to be sent back as
-    // <div class="coffee"><span>*COFFEE NAME*</span> <span>*COFFEE ROAST*</span></div>
+    // <div class="coffee"><h4>*COFFEE NAME*</h4> <p>*COFFEE ROAST*</p></div>
     let html = '<div class="coffee">';
-    html += '<span class="coffee-name">' + coffee.name + '</span> ';
-    html += '<span class="coffee-roast">' + coffee.roast + '</span>';
+    html += '<h4 class="coffee-name">' + coffee.name + '</h4> ';
+    html += '<p class="coffee-roast">' + coffee.roast + '</p>';
     html += '</div>'
 
     return html;
@@ -45,10 +38,16 @@ function updateCoffees(e) {
             filteredCoffees.push(coffee);
         }
     });
-    // tbody is the contents of a table in html
-    // the function it calls overwrites the table only when this part of this function runs
+    // this sets the coffee display div to display the coffees currently matching the criteria (all at first)
     coffeeDiv.innerHTML = renderCoffees(filteredCoffees);
 }
+
+/** new functions go under here
+ */
+
+
+/** things that are run when page first loads go under here
+ */
 
 // this is the list of coffees and their data
 // it is an array of objects which have this structure:
@@ -73,10 +72,14 @@ var coffees = [
     {id: 14, name: 'French', roast: 'dark'},
 ];
 
+// this contains the html element we are going to display the "list" of coffees with
 const coffeeDiv = document.querySelector('#coffee-display-container');
+// this is the button with the event listener which calls the updateCoffees function
 const submitButton = document.querySelector('#submit');
+// this is the roast options dropdown element
 const roastSelection = document.querySelector('#roast-selection');
 
+// this is the text field for searching by name
 const nameSearch = document.querySelector('#name-search');
 
 
