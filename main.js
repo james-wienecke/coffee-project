@@ -44,22 +44,53 @@ function updateCoffees(e) {
 
 /** new functions go under here
  */
+
+/** The matchRoast function takes a coffee object and a roast string and compares them, returning a
+ * boolean value corresponding to the two parameter's matching. Additionally, it exits early if the value
+ * selected by the user is 'all roasts' so as to enable the other search criteria to match in isolation.
+ *
+ * @param coffee            object, contains an id number, a name string, and a roast string
+ * @param roast             string, can be either any of the coffee roast values or 'all roasts'
+ * @returns {boolean}
+ */
 function matchRoast(coffee, roast) {
     if (roast === 'all roasts') return true;
-    if (coffee.roast === roast) {
-        return true;
-    } else {
-        return false;
-    }
+    return (coffee.roast === roast);
 }
 
+/** The matchName function takes a coffee object and a roast string and compares them, returning a
+ * boolean value corresponding to the two parameter's matching. If the indexOf() method returns, -1,
+ * the search criteria the user specified does not match the coffee object currently being evaluated.
+ * Any result larger than -1 is considered a partial match, and the function returns true. Additionally,
+ * this function exits early if the search string is empty, to allow for pure roast filtering.
+ *
+ * @param coffee            object, contains an id number, a name string, and a roast string
+ * @param search            string, can be either any of the coffee roast values or 'all roasts'
+ * @returns {boolean}
+ */
 function matchName(coffee, search) {
     if (search === '') return true;
-    if (coffee.name.toLowerCase().indexOf(search) >= 0) {
-        return true;
-    } else {
-        return false;
+    return (coffee.name.toLowerCase().indexOf(search) >= 0);
+}
+
+/** The addCoffee function should only be run as an event fired from a button's click event. The e parameter is
+ * used to prevent a full default form submission. This function constructs a new coffee object from user's input
+ * and adds it to the existing coffee array with an appropriate ID. Next it refreshes the coffee display and
+ * clears all inputs to both forms.
+ *
+ * @param e
+ */
+function addCoffee(e) {
+    e.preventDefault(); // DON'T submit form
+    let newCoffee = {
+        id: coffees.length + 1,
+        name: nameAdd.value,
+        roast: roastAdd.value
     }
+    coffees.push(newCoffee);
+    document.querySelector('#add-form').reset();
+    document.querySelector('#search-form').reset();
+    coffeeDiv.innerHTML = renderCoffees(coffees);
 }
 
 /** things that are run when page first loads go under here
@@ -91,7 +122,7 @@ var coffees = [
 // this contains the html element we are going to display the "list" of coffees with
 const coffeeDiv = document.querySelector('#coffee-display-container');
 // this is the button with the event listener which calls the updateCoffees function
-const submitButton = document.querySelector('#submit');
+// const submitButton = document.querySelector('#submit'); (deprecated)
 // this is the roast options dropdown element
 const roastSelection = document.querySelector('#roast-selection');
 
@@ -104,7 +135,16 @@ coffeeDiv.innerHTML = renderCoffees(coffees);
 
 
 //when submitButton is clicked, updateCoffees runs
-submitButton.addEventListener('click', updateCoffees);
+// submitButton.addEventListener('click', updateCoffees); (deprecated)
 
+// replaced submit button with active filtering when input in either field is changed
 roastSelection.addEventListener('input', updateCoffees);
 nameSearch.addEventListener('input', updateCoffees);
+
+// add a coffee form DOM linkups below here
+
+const roastAdd = document.querySelector('#roast-add');
+const nameAdd = document.querySelector('#name-add');
+const newCoffeeSubmit = document.querySelector('#submit-add');
+
+newCoffeeSubmit.addEventListener('click', addCoffee);
