@@ -55,11 +55,7 @@ function updateCoffees(e) {
  */
 function matchRoast(coffee, roast) {
     if (roast === 'all roasts') return true;
-    if (coffee.roast === roast) {
-        return true;
-    } else {
-        return false;
-    }
+    return (coffee.roast === roast);
 }
 
 /** The matchName function takes a coffee object and a roast string and compares them, returning a
@@ -74,11 +70,7 @@ function matchRoast(coffee, roast) {
  */
 function matchName(coffee, search) {
     if (search === '') return true;
-    if (coffee.name.toLowerCase().indexOf(search) >= 0) {
-        return true;
-    } else {
-        return false;
-    }
+    return (coffee.name.toLowerCase().indexOf(search) >= 0);
 }
 
 /** things that are run when page first loads go under here
@@ -110,7 +102,7 @@ var coffees = [
 // this contains the html element we are going to display the "list" of coffees with
 const coffeeDiv = document.querySelector('#coffee-display-container');
 // this is the button with the event listener which calls the updateCoffees function
-const submitButton = document.querySelector('#submit');
+// const submitButton = document.querySelector('#submit'); (deprecated)
 // this is the roast options dropdown element
 const roastSelection = document.querySelector('#roast-selection');
 
@@ -123,7 +115,8 @@ coffeeDiv.innerHTML = renderCoffees(coffees);
 
 
 //when submitButton is clicked, updateCoffees runs
-submitButton.addEventListener('click', updateCoffees);
+// submitButton.addEventListener('click', updateCoffees); (deprecated)
 
+// replaced submit button with active filtering when input in either field is changed
 roastSelection.addEventListener('input', updateCoffees);
 nameSearch.addEventListener('input', updateCoffees);
