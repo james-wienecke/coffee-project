@@ -31,20 +31,19 @@
                             <option>dark</option>
                         </select>
                     </div>
+                    <!-- New label for the coffee name search input-->
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="name-search">Coffee Name</label>
                         </div>
-                        <input type="text" id="name-search" class="form-control">
+                        <input type="text" id="name-search" class="form-control" autocomplete="off">
                     </div>
-                    <!-- New label for the coffee name search input-->
-                    <!-- We are going to need to add another field (probably a text field in here too to allow user to -->
-                    <!-- search through the coffees by name. Since it's a text field we do not have to provide values here -->
                     <hr>
                 </form>
             </div>
             <div class="col-12" id="add-area">
                 <form id="add-form">
+                    <!-- Here we give the user the option to add their coffee into the list -->
                     <h4>Add a coffee</h4>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
@@ -56,12 +55,11 @@
                             <option>dark</option>
                         </select>
                     </div>
-                    <!-- Here we give the user the option to add their coffee into the list -->
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="name-add">Coffee Name</label>
                         </div>
-                        <input type="text" id="name-add" class="form-control">
+                        <input type="text" id="name-add" class="form-control" autocomplete="off">
                     </div>
                     <button type="button" class="btn btn-primary btn-block mb-3" id="submit-add">Submit Coffee</button>
                 </form>

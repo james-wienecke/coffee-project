@@ -2,26 +2,20 @@
 *{
     --main-color: #cb997e;
 }
-
 body {
     font-family: 'Lato', sans-serif;
     font-weight: 400;
 }
-
 h1, h2, h3, h4, h5, h6 {
     font-family: 'EB Garamond', serif;
     font-weight: 700;
 }
-
 #content-area {
     height: 85vh;
 }
-
 .coffee-card {
     max-height: 100%;
 }
-
-
 .btn-primary,
 .btn-primary:hover,
 .btn-primary:active,
@@ -31,7 +25,17 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--main-color) !important;
     color: black !important;
 }
-
 .coffee-name {
     color: var(--main-color) !important;
+}
+@keyframes append-animate {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.coffee {
+    animation: append-animate .25s ease-in;
 }
