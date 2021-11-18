@@ -94,7 +94,11 @@ function addCoffee(e) {
     coffeeDiv.innerHTML = renderCoffees(coffees);
 }
 
-/**
+/** The addCoffeeToStorage function saves the user's new coffee to be loaded after their session ends.
+ * Our approach is to destructure the coffee object and assign its data to three individual pieces of data.
+ * By using string template literals, we can dynamically alter the key name for each new coffee object
+ * The format for naming the keys is: *id*_id, *id*_name, *id*_roast. For example, the coffee with id 16
+ * would have its localStorage keys look like this: 16_id, 16_name, 16_roast.
  *
  * @param id
  * @param name
