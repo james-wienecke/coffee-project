@@ -115,6 +115,10 @@ function addCoffeeToStorage(id, name, roast) {
     console.log(localStorage); //test localStorage to check for good data
 }
 
+/** The getLocalCoffeeData retrieves the coffee data saved to localStorage. It restructures a coffee object
+ * from localStorage, essentially doing addCoffeeToStorage in reverse. Once a coffee object is built, it
+ * pushes the object into the main coffees array
+ */
 function getLocalCoffeeData() {
     // if the localStorage does not have exactly 3 key:value pairs, we won't add the coffee from storage
     if(localStorage.length % 3 === 0) {
