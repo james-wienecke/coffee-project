@@ -87,10 +87,54 @@ function addCoffee(e) {
         name: nameAdd.value,
         roast: roastAdd.value
     }
+    addCoffeeToStorage(newCoffee.id, newCoffee.name, newCoffee.roast);
     coffees.push(newCoffee);
     document.querySelector('#add-form').reset();
     document.querySelector('#search-form').reset();
     coffeeDiv.innerHTML = renderCoffees(coffees);
+}
+
+/** The addCoffeeToStorage function saves the user's new coffee to be loaded after their session ends.
+ * Our approach is to destructure the coffee object and assign its data to three individual pieces of data.
+ * By using string template literals, we can dynamically alter the key name for each new coffee object
+ * The format for naming the keys is: *id*_id, *id*_name, *id*_roast. For example, the coffee with id 16
+ * would have its localStorage keys look like this: 16_id, 16_name, 16_roast.
+ *
+ * @param id
+ * @param name
+ * @param roast
+ */
+function addCoffeeToStorage(id, name, roast) {
+    // localStorage only allows strings to be given to it, so in order to prevent key collisions
+    // and retain meaningful key names, we are using string template literals. They require a backtick (`)
+    // instead of quotes or doublequotes ('/") and we can dynamically change their content with ${*variable*}
+    localStorage.setItem(`${id}_id`, id);
+    localStorage.setItem(`${id}_name`, name);
+    localStorage.setItem(`${id}_roast`, roast);
+}
+
+/** The getLocalCoffeeData retrieves the coffee data saved to localStorage. It restructures a coffee object
+ * from localStorage, essentially doing addCoffeeToStorage in reverse. Once a coffee object is built, it
+ * pushes the object into the main coffees array
+ */
+function getLocalCoffeeData() {
+    // if the localStorage does not have exactly 3 key:value pairs, we won't add the coffee from storage
+    if(localStorage.length % 3 === 0) {
+        // the idLookup variable is going to help us rebuild the key names to access the coffee data in localStorage
+        let idLookup = coffees.length + 1;
+        // we load saved coffee in batches of 3 key:value pairs
+        for(let i = 0; i < (localStorage.length / 3); i++) {
+            let loadCoffee = {
+                id: localStorage.getItem(`${idLookup}_id`),
+                name: localStorage.getItem(`${idLookup}_name`),
+                roast: localStorage.getItem(`${idLookup}_roast`)
+            }
+            idLookup++; // we need to increment our id lookup to access the next coffee's data
+            coffees.push(loadCoffee); // get that coffee in there!
+        }
+    } else {
+        console.log("Malformed data in localStorage:", localStorage)
+    }
 }
 
 /** things that are run when page first loads go under here
@@ -128,6 +172,9 @@ const roastSelection = document.querySelector('#roast-selection');
 
 // this is the text field for searching by name
 const nameSearch = document.querySelector('#name-search');
+
+// check window.localStorage for coffees to load
+getLocalCoffeeData();
 
 
 // this line initially fills the table with ALL coffees
