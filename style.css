@@ -31,3 +31,7 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--main-color) !important;
     color: black !important;
 }
+
+.coffee-name {
+    color: var(--main-color) !important;
+}
