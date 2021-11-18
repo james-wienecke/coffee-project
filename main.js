@@ -87,10 +87,25 @@ function addCoffee(e) {
         name: nameAdd.value,
         roast: roastAdd.value
     }
+    addCoffeeToStorage(newCoffee.id, newCoffee.name, newCoffee.roast);
     coffees.push(newCoffee);
     document.querySelector('#add-form').reset();
     document.querySelector('#search-form').reset();
     coffeeDiv.innerHTML = renderCoffees(coffees);
+}
+
+/**
+ *
+ * @param id
+ * @param name
+ * @param roast
+ */
+function addCoffeeToStorage(id, name, roast) {
+    localStorage.setItem(`${id}_id`, id);
+    localStorage.setItem(`${id}_name`, name);
+    localStorage.setItem(`${id}_roast`, roast);
+
+    console.log(localStorage); //test localStorage to check for good data
 }
 
 /** things that are run when page first loads go under here
