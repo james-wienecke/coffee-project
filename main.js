@@ -101,6 +101,9 @@ function addCoffee(e) {
  * @param roast
  */
 function addCoffeeToStorage(id, name, roast) {
+    // localStorage only allows strings to be given to it, so in order to prevent key collisions
+    // and retain meaningful key names, we are using string template literals. They require a backtick (`)
+    // instead of quotes or doublequotes ('/") and we can dynamically change their content with ${*variable*}
     localStorage.setItem(`${id}_id`, id);
     localStorage.setItem(`${id}_name`, name);
     localStorage.setItem(`${id}_roast`, roast);
