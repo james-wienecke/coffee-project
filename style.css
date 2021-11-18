@@ -1,3 +1,7 @@
-#coffee-display-container {
-    height: 76.8vh;
+#content-area {
+    height: 85vh;
+}
+
+#coffee-card {
+    max-height: 100%;
 }
