@@ -111,8 +111,6 @@ function addCoffeeToStorage(id, name, roast) {
     localStorage.setItem(`${id}_id`, id);
     localStorage.setItem(`${id}_name`, name);
     localStorage.setItem(`${id}_roast`, roast);
-
-    console.log(localStorage); //test localStorage to check for good data
 }
 
 /** The getLocalCoffeeData retrieves the coffee data saved to localStorage. It restructures a coffee object
@@ -134,6 +132,8 @@ function getLocalCoffeeData() {
             idLookup++; // we need to increment our id lookup to access the next coffee's data
             coffees.push(loadCoffee); // get that coffee in there!
         }
+    } else {
+        console.log("Malformed data in localStorage:", localStorage)
     }
 }
 
