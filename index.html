@@ -14,22 +14,39 @@
 </section>
 
 <section class="row">
-    <section class="col-6">
+    <section class="col-12 col-md-6 pb-4">
         <section class="row">
             <div class="col-12" id="search-area">
                 <form id="search-form">
                     <!-- label and select here provide the data we use to filter the coffees by type of roast -->
-                    <label for="roast-selection"></label>
-                    <select id="roast-selection">
-                        <!-- the values that the coffees are compared to in the javascript come from here and are read as strings-->
-                        <option selected>all roasts</option>
-                        <option>light</option>
-                        <option>medium</option>
-                        <option>dark</option>
-                    </select>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="roast-selection">Roast Type</label>
+                        </div>
+                        <select class="custom-select" id="roast-selection">
+                            <option selected>all roasts</option>
+                            <option>light</option>
+                            <option>medium</option>
+                            <option>dark</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="name-search">Coffee Name</label>
+                            <input type="text" id="name-search" class="form-control">
+                        </div>
+                    </div>
+<!--                    <label for="roast-selection"></label>-->
+<!--                    <select id="roast-selection">-->
+<!--                        &lt;!&ndash; the values that the coffees are compared to in the javascript come from here and are read as strings&ndash;&gt;-->
+<!--                        <option selected>all roasts</option>-->
+<!--                        <option>light</option>-->
+<!--                        <option>medium</option>-->
+<!--                        <option>dark</option>-->
+<!--                    </select>-->
                     <!-- New label for the coffee name search input-->
-                    <label for="name-search"></label>
-                    <input type="text" id="name-search">
+<!--                    <label for="name-search"></label>-->
+<!--                    <input type="text" id="name-search">-->
                     <!-- We are going to need to add another field (probably a text field in here too to allow user to -->
                     <!-- search through the coffees by name. Since it's a text field we do not have to provide values here -->
                     <!--        <input id="submit" type="submit"/> submit button no longer needed -->
@@ -39,13 +56,23 @@
             <div class="col-12" id="add-area">
                 <form id="add-form">
                     <h2>Add a coffee</h2>
-                    <label for="roast-add"></label>
-                    <select id="roast-add">
-                        <!-- the values that the coffees are compared to in the javascript come from here and are read as strings-->
-                        <option>light</option>
-                        <option>medium</option>
-                        <option>dark</option>
-                    </select>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="roast-add">Roast Type</label>
+                        </div>
+                        <select class="custom-select" id="roast-add">
+                            <option>light</option>
+                            <option>medium</option>
+                            <option>dark</option>
+                        </select>
+                    </div>
+<!--                    <label for="roast-add"></label>-->
+<!--                    <select id="roast-add">-->
+<!--                        &lt;!&ndash; the values that the coffees are compared to in the javascript come from here and are read as strings&ndash;&gt;-->
+<!--                        <option>light</option>-->
+<!--                        <option>medium</option>-->
+<!--                        <option>dark</option>-->
+<!--                    </select>-->
 
                     <!-- Here we give the user the option to add their coffee into the list -->
                     <label for="name-add"></label>
@@ -60,7 +87,7 @@
     <!-- each coffee is displayed in a div that
     contains a heading displaying the coffee name, and the type of roast in a paragraph.
     Don't display the ids, these are only for our application's internal use-->
-    <section class="col-6">
+    <section class="col-12">
         <div id="coffee-display-container" class="text-capitalize">
             <!-- coffee divs go here -->
         </div>
