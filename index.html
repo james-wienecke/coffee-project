@@ -13,11 +13,12 @@
     <h1 class="col-12 text-center">Coffee!</h1>
 </section>
 
-<section class="row">
-    <section class="col-12 col-md-6 pb-4">
+<section class="row" id="content-area">
+    <section class="col-12 col-md-5 mb-4 mb-md-0 border overflow-auto coffee-card">
         <section class="row">
             <div class="col-12" id="search-area">
                 <form id="search-form">
+                    <h4 class="mt-3">Find your next cup!</h4>
                     <!-- label and select here provide the data we use to filter the coffees by type of roast -->
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
@@ -44,7 +45,7 @@
             </div>
             <div class="col-12" id="add-area">
                 <form id="add-form">
-                    <h2>Add a coffee</h2>
+                    <h4>Add a coffee</h4>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <label class="input-group-text" for="roast-add">Roast Type</label>
@@ -62,7 +63,7 @@
                         </div>
                         <input type="text" id="name-add" class="form-control">
                     </div>
-                    <button type="button" class="btn btn-primary btn-lg btn-block" id="submit-add">Submit Coffee</button>
+                    <button type="button" class="btn btn-primary btn-lg btn-block mb-3" id="submit-add">Submit Coffee</button>
                 </form>
             </div>
         </section>
@@ -71,7 +72,7 @@
     <!-- each coffee is displayed in a div that
     contains a heading displaying the coffee name, and the type of roast in a paragraph.
     Don't display the ids, these are only for our application's internal use-->
-    <section class="col-12">
+    <section class="col-12 col-md-5 offset-md-2 border overflow-auto coffee-card">
         <div id="coffee-display-container" class="text-capitalize">
             <!-- coffee divs go here -->
         </div>
