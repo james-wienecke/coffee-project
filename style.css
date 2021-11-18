@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&family=Lato:wght@400;700&family=Libre+Baskerville:wght@400;700&family=Merriweather:wght@400;700&family=Montserrat:wght@400;700&display=swap');
-
+*{
+    --main-color: #cb997e;
+}
 
 body {
     font-family: 'Lato', sans-serif;
@@ -17,4 +19,19 @@ h1, h2, h3, h4, h5, h6 {
 
 .coffee-card {
     max-height: 100%;
+}
+
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:visited,
+.btn-primary:focus {
+    background-color: var(--main-color) !important;
+    border-color: var(--main-color) !important;
+    color: black !important;
+}
+
+.coffee-name {
+    color: var(--main-color) !important;
 }
