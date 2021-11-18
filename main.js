@@ -111,6 +111,24 @@ function addCoffeeToStorage(id, name, roast) {
     console.log(localStorage); //test localStorage to check for good data
 }
 
+function getLocalCoffeeData() {
+    // if the localStorage does not have exactly 3 key:value pairs, we won't add the coffee from storage
+    if(localStorage.length % 3 === 0) {
+        // the idLookup variable is going to help us rebuild the key names to access the coffee data in localStorage
+        let idLookup = coffees.length + 1;
+        // we load saved coffee in batches of 3 key:value pairs
+        for(let i = 0; i < (localStorage.length / 3); i++) {
+            let loadCoffee = {
+                id: localStorage.getItem(`${idLookup}_id`),
+                name: localStorage.getItem(`${idLookup}_name`),
+                roast: localStorage.getItem(`${idLookup}_roast`)
+            }
+            idLookup++; // we need to increment our id lookup to access the next coffee's data
+            coffees.push(loadCoffee); // get that coffee in there!
+        }
+    }
+}
+
 /** things that are run when page first loads go under here
  */
 
@@ -146,6 +164,9 @@ const roastSelection = document.querySelector('#roast-selection');
 
 // this is the text field for searching by name
 const nameSearch = document.querySelector('#name-search');
+
+// check window.localStorage for coffees to load
+getLocalCoffeeData();
 
 
 // this line initially fills the table with ALL coffees
