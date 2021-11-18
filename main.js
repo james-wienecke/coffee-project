@@ -9,7 +9,6 @@ function renderCoffee(coffee) {
     html += '<h4 class="coffee-name">' + coffee.name + '</h4> ';
     html += '<p class="coffee-roast">' + coffee.roast + '</p>';
     html += '</div>'
-
     return html;
 }
 
@@ -176,20 +175,14 @@ const nameSearch = document.querySelector('#name-search');
 // check window.localStorage for coffees to load
 getLocalCoffeeData();
 
-
 // this line initially fills the table with ALL coffees
 coffeeDiv.innerHTML = renderCoffees(coffees);
-
-
-//when submitButton is clicked, updateCoffees runs
-// submitButton.addEventListener('click', updateCoffees); (deprecated)
 
 // replaced submit button with active filtering when input in either field is changed
 roastSelection.addEventListener('input', updateCoffees);
 nameSearch.addEventListener('input', updateCoffees);
 
 // add a coffee form DOM linkups below here
-
 const roastAdd = document.querySelector('#roast-add');
 const nameAdd = document.querySelector('#name-add');
 const newCoffeeSubmit = document.querySelector('#submit-add');
