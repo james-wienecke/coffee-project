@@ -5,13 +5,18 @@
 body {
     font-family: 'Lato', sans-serif;
     font-weight: 400;
+    color: #495057 !important;
 }
 h1, h2, h3, h4, h5, h6 {
     font-family: 'EB Garamond', serif;
     font-weight: 700;
+    color: #495057 !important;
 }
+.title-row {
+     background-color: var(--main-color);
+ }
 #content-area {
-    height: 85vh;
+    height: 75vh;
 }
 .coffee-card {
     max-height: 100%;
@@ -23,7 +28,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn-primary:focus {
     background-color: var(--main-color) !important;
     border-color: var(--main-color) !important;
-    color: black !important;
+    color: #495057 !important;
 }
 .coffee-name {
     color: var(--main-color) !important;
@@ -38,4 +43,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 .coffee {
     animation: append-animate .25s ease-in;
+    padding: .5em;
+}
+.coffee:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+.coffee:hover {
+    background-color: rgba(179, 133, 111, 0.2);
+}
+.input-group-text {
+    background-color: var(--main-color) !important;
+}
+.dark-roast {
+    color: #4d3930;
+}
+.medium-roast {
+    color: #80614f;
+}
+.light-roast  {
+    color: #b3866f;
 }

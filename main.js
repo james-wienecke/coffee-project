@@ -1,48 +1,29 @@
 "use strict"
 
-// it returns html code that displays ONE coffee's info in a div, name in <h4> and roast in <p>
-// this function is run by renderCoffees
-function renderCoffee(coffee) {
-    // each list in the list of of coffees we will display is simply going to be sent back as
-    // <div class="coffee"><h4>*COFFEE NAME*</h4> <p>*COFFEE ROAST*</p></div>
-    let html = '<div class="coffee">';
-    html += '<h4 class="coffee-name">' + coffee.name + '</h4> ';
-    html += '<p class="coffee-roast">' + coffee.roast + '</p>';
-    html += '</div>'
-    return html;
-}
-
-// this function puts together all the new html code for displaying a table in the web page
-function renderCoffees(coffees) {
-    var html = '';
-    for (var i = 0; i < coffees.length; i++) {
-        html += renderCoffee(coffees[i]);
-    }
-    return html;
-}
-
-function updateCoffees(e) {
-    // e calls back to the event manager and is connected form submission
-    e.preventDefault(); // don't submit the form, we just want to update the data
+/** updateCoffees is the main way our coffee list gets updated to filter for user input. It's setup to only take
+ *  events from 'input' eventListeners, when it will save the contents of both primary inputs to corresponding
+ *  variables. It then creates a bucket array that will be used to store matches from the main coffees array so
+ *  that these whitelisted coffee objects can be sent to our render pipeline and get those matches out for users.
+ */
+function updateCoffees() {
     // roastSelection is given values to present the user in the html page and this data is then
     // sent into the javascript application by this variable assignment.
-    var selectedRoast = roastSelection.value;
+    const selectedRoast = roastSelection.value;
     // this string contains the coffee name we wish to match with
-    let selectedName = nameSearch.value;
+    const selectedName = nameSearch.value;
     // filteredCoffees is created here empty and will be filled with coffees with data matching
-    var filteredCoffees = [];
-    //                          coffee here is just a selector for each element inside coffeeS which is defined below
-    coffees.forEach(function (coffee) {
+    let filteredCoffees = [];
+
+    for (const coffee of coffees) {
         if (matchRoast(coffee, selectedRoast) && matchName(coffee, selectedName)) {
             filteredCoffees.push(coffee);
         }
-    });
-    // this sets the coffee display div to display the coffees currently matching the criteria (all at first)
-    coffeeDiv.innerHTML = renderCoffees(filteredCoffees);
+    }
+    // we need to build up a new node tree for the document so that our chosen coffee objects will be displayed
+    nodeBuildCoffeeList(filteredCoffees);
 }
 
-/** new functions go under here
- */
+/** new functions go under here **/
 
 /** The matchRoast function takes a coffee object and a roast string and compares them, returning a
  * boolean value corresponding to the two parameter's matching. Additionally, it exits early if the value
@@ -61,7 +42,7 @@ function matchRoast(coffee, roast) {
  * boolean value corresponding to the two parameter's matching. If the indexOf() method returns, -1,
  * the search criteria the user specified does not match the coffee object currently being evaluated.
  * Any result larger than -1 is considered a partial match, and the function returns true. Additionally,
- * this function exits early if the search string is empty, to allow for pure roast filtering.
+ * this function exits early if the search string is empty, to allow for pure filtering by roast.
  *
  * @param coffee            object, contains an id number, a name string, and a roast string
  * @param search            string, can be either any of the coffee roast values or 'all roasts'
@@ -81,16 +62,16 @@ function matchName(coffee, search) {
  */
 function addCoffee(e) {
     e.preventDefault(); // DON'T submit form
-    let newCoffee = {
+    const newCoffee = {
         id: coffees.length + 1,
         name: nameAdd.value,
         roast: roastAdd.value
-    }
+    };
     addCoffeeToStorage(newCoffee.id, newCoffee.name, newCoffee.roast);
     coffees.push(newCoffee);
     document.querySelector('#add-form').reset();
     document.querySelector('#search-form').reset();
-    coffeeDiv.innerHTML = renderCoffees(coffees);
+    nodeBuildCoffeeList(coffees);
 }
 
 /** The addCoffeeToStorage function saves the user's new coffee to be loaded after their session ends.
@@ -106,7 +87,7 @@ function addCoffee(e) {
 function addCoffeeToStorage(id, name, roast) {
     // localStorage only allows strings to be given to it, so in order to prevent key collisions
     // and retain meaningful key names, we are using string template literals. They require a backtick (`)
-    // instead of quotes or doublequotes ('/") and we can dynamically change their content with ${*variable*}
+    // instead of quotes or double-quotes ('/") and we can dynamically change their content with ${<var>}
     localStorage.setItem(`${id}_id`, id);
     localStorage.setItem(`${id}_name`, name);
     localStorage.setItem(`${id}_roast`, roast);
@@ -124,15 +105,67 @@ function getLocalCoffeeData() {
         // we load saved coffee in batches of 3 key:value pairs
         for(let i = 0; i < (localStorage.length / 3); i++) {
             let loadCoffee = {
-                id: localStorage.getItem(`${idLookup}_id`),
+                id: parseFloat(localStorage.getItem(`${idLookup}_id`)),
                 name: localStorage.getItem(`${idLookup}_name`),
                 roast: localStorage.getItem(`${idLookup}_roast`)
-            }
+            };
             idLookup++; // we need to increment our id lookup to access the next coffee's data
             coffees.push(loadCoffee); // get that coffee in there!
         }
     } else {
-        console.log("Malformed data in localStorage:", localStorage)
+        console.log("Malformed data in localStorage:", localStorage);
+    }
+    // very unnecessary but just makes double extra sure our coffee array is always sorted in ascending order
+    coffees.sort((x, y) => (x.id > y.id) ? 1 : -1);
+}
+
+/** nodeBuildCoffeeItem is essentially equivalent to "renderCoffee" in the original project, but has been tweaked
+ * to allow a new node-based approach. This process is much more granular and allows fine control of the list
+ * population (ie. does not require the entire element to be built at once).
+ *
+ * @param coffee            a single coffee object from the global coffees array
+ * @returns newDiv          a document node
+ */
+function nodeBuildCoffeeItem(coffee) {
+    // this new div will be the main container for our individual coffee list items
+    const newDiv = document.createElement("DIV");
+    newDiv.className = "coffee d-flex justify-content-between border"; //bootstrap and css styling
+
+    const newH4 = document.createElement("H4");
+    newH4.className = "coffee-name mb-0"; //bootstrap and css styling
+    newH4.innerText = coffee.name;
+
+    const newP = document.createElement("P");
+    newP.className = `coffee-roast my-auto ${coffee.roast}-roast`; //bootstrap and css styling
+    newP.innerText = coffee.roast;
+
+    // our node's elements are prepared, lets add them to their own little prepared flex container
+    newDiv.appendChild(newH4);
+    newDiv.appendChild(newP);
+
+    return newDiv;
+}
+
+/** nodeBuildCoffeeList is the equivalent of the renderCoffees function in the original project. Thanks to
+ * using a node-based system, this function can achieve cool things (such as adding a small delay before
+ * each coffee is put into the list)
+ *
+ * @param coffees           an array of coffee objects
+ */
+function nodeBuildCoffeeList(coffees) {
+    if (coffeeDiv.childNodes.length > 0) {
+        coffeeDiv.textContent = '';
+    }
+    let i = 0;
+    // we can get a nice fade-in cascade effect by using an interval instead of a normal loop :)
+    if (pref_enableAnimation) {
+        let interval = setInterval(function () {
+            if (i === coffees.length - 1) clearInterval(interval);
+            coffeeDiv.appendChild(nodeBuildCoffeeItem(coffees[i]));
+            i++;
+        }, 150);
+    } else { // pref_enableAnimation being set to false lets us skip the cascade effect
+        for (const coffee of coffees) coffeeDiv.appendChild(nodeBuildCoffeeItem(coffee));
     }
 }
 
@@ -145,7 +178,7 @@ function getLocalCoffeeData() {
 // name:     <string>
 // roast:    <string>
 // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
-var coffees = [
+let coffees = [
     {id: 1, name: 'Light City', roast: 'light'},
     {id: 2, name: 'Half City', roast: 'light'},
     {id: 3, name: 'Cinnamon', roast: 'light'},
@@ -164,27 +197,29 @@ var coffees = [
 
 // this contains the html element we are going to display the "list" of coffees with
 const coffeeDiv = document.querySelector('#coffee-display-container');
-// this is the button with the event listener which calls the updateCoffees function
-// const submitButton = document.querySelector('#submit'); (deprecated)
 // this is the roast options dropdown element
 const roastSelection = document.querySelector('#roast-selection');
 
 // this is the text field for searching by name
 const nameSearch = document.querySelector('#name-search');
 
+// the little fadein animation can be bypassed by setting this to false
+let pref_enableAnimation = true;
+
 // check window.localStorage for coffees to load
 getLocalCoffeeData();
 
 // this line initially fills the table with ALL coffees
-coffeeDiv.innerHTML = renderCoffees(coffees);
+nodeBuildCoffeeList(coffees);
 
 // replaced submit button with active filtering when input in either field is changed
 roastSelection.addEventListener('input', updateCoffees);
 nameSearch.addEventListener('input', updateCoffees);
 
-// add a coffee form DOM linkups below here
+// 'add a coffee' form DOM linkups below here
 const roastAdd = document.querySelector('#roast-add');
 const nameAdd = document.querySelector('#name-add');
 const newCoffeeSubmit = document.querySelector('#submit-add');
 
+// this runs the 'add a coffee' routine
 newCoffeeSubmit.addEventListener('click', addCoffee);
