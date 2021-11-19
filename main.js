@@ -38,7 +38,8 @@ function updateCoffees(e) {
         }
     });
     // this sets the coffee display div to display the coffees currently matching the criteria (all at first)
-    coffeeDiv.innerHTML = renderCoffees(filteredCoffees);
+    // coffeeDiv.innerHTML = renderCoffees(filteredCoffees);
+    nodeBuildCoffeeList(filteredCoffees);
 }
 
 /** new functions go under here
@@ -90,7 +91,8 @@ function addCoffee(e) {
     coffees.push(newCoffee);
     document.querySelector('#add-form').reset();
     document.querySelector('#search-form').reset();
-    coffeeDiv.innerHTML = renderCoffees(coffees);
+    // coffeeDiv.innerHTML = renderCoffees(coffees);
+    nodeBuildCoffeeList(coffees);
 }
 
 /** The addCoffeeToStorage function saves the user's new coffee to be loaded after their session ends.
@@ -136,6 +138,28 @@ function getLocalCoffeeData() {
     }
 }
 
+function nodeBuildCoffeeItem(coffee) {
+    let newDiv = document.createElement("DIV");
+    newDiv.className = "coffee";
+    let newH4 = document.createElement("H4");
+    newH4.className = "coffee-name";
+    newH4.innerText = coffee.name;
+    let newP = document.createElement("P");
+    newP.className = "coffee-roast";
+    newP.innerText = coffee.roast;
+    newDiv.appendChild(newH4);
+    newDiv.appendChild(newP);
+
+    return newDiv;
+}
+
+function nodeBuildCoffeeList(coffees) {
+    coffeeDiv.textContent = ''; // this needs a better solution >:L
+    coffees.forEach((coffee) => {
+        coffeeDiv.appendChild(nodeBuildCoffeeItem(coffee));
+    });
+}
+
 /** things that are run when page first loads go under here
  */
 
@@ -176,7 +200,8 @@ const nameSearch = document.querySelector('#name-search');
 getLocalCoffeeData();
 
 // this line initially fills the table with ALL coffees
-coffeeDiv.innerHTML = renderCoffees(coffees);
+// coffeeDiv.innerHTML = renderCoffees(coffees);
+nodeBuildCoffeeList(coffees);
 
 // replaced submit button with active filtering when input in either field is changed
 roastSelection.addEventListener('input', updateCoffees);
