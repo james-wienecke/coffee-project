@@ -138,6 +138,12 @@ function getLocalCoffeeData() {
     }
 }
 
+/** nodeBuildCoffeeItem is essentially equivalent to "renderCoffee" in the original project, but has been tweaked
+ * to allow a new node-based approach. This process is much more granular and allows fine control of the list
+ * population (ie. does not require the entire element to be built at once)
+ *
+ * @param coffee            a single coffee object from the global coffees array
+ */
 function nodeBuildCoffeeItem(coffee) {
     let newDiv = document.createElement("DIV");
     newDiv.className = "coffee";
@@ -150,9 +156,22 @@ function nodeBuildCoffeeItem(coffee) {
     newDiv.appendChild(newH4);
     newDiv.appendChild(newP);
 
+    coffeeDiv.childNodes.forEach((div) => {
+        if (newDiv.isEqualNode(div)) {
+            newDiv.textContent = ''
+        }
+    });
+
+
     coffeeDiv.appendChild(newDiv);
 }
 
+/** nodeBuildCoffeeList is the equivalent of the renderCoffees function in the original project. Thanks to
+ * using a node-based system, this function can achieve cool things (such as adding a small delay before
+ * each coffee is put into the list)
+ *
+ * @param coffees           an array of coffee objects
+ */
 function nodeBuildCoffeeList(coffees) {
     coffeeDiv.textContent = '';
     let i = 0;
