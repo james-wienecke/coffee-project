@@ -114,6 +114,7 @@ function getLocalCoffeeData() {
     } else {
         console.log("Malformed data in localStorage:", localStorage);
     }
+    coffees.sort((x, y) => (x.id > y.id) ? 1 : -1);
 }
 
 /** nodeBuildCoffeeItem is essentially equivalent to "renderCoffee" in the original project, but has been tweaked
@@ -124,13 +125,12 @@ function getLocalCoffeeData() {
  */
 function nodeBuildCoffeeItem(coffee) {
     let newDiv = document.createElement("DIV");
-    newDiv.className = "coffee";
-    newDiv.id = `${coffee.id}_coffee`; // this doesn't really do much but can be used to lookup these new divs by id
+    newDiv.className = "coffee d-flex justify-content-between border";
     let newH4 = document.createElement("H4");
-    newH4.className = "coffee-name";
+    newH4.className = "coffee-name mb-0";
     newH4.innerText = coffee.name;
     let newP = document.createElement("P");
-    newP.className = "coffee-roast";
+    newP.className = `coffee-roast my-auto ${coffee.roast}-roast`;
     newP.innerText = coffee.roast;
     newDiv.appendChild(newH4);
     newDiv.appendChild(newP);
