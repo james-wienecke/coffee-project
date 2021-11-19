@@ -150,15 +150,21 @@ function nodeBuildCoffeeItem(coffee) {
     newDiv.appendChild(newH4);
     newDiv.appendChild(newP);
 
-    return newDiv;
+    coffeeDiv.appendChild(newDiv);
 }
 
 function nodeBuildCoffeeList(coffees) {
-    coffeeDiv.textContent = ''; // this needs a better solution >:L
-    coffees.forEach((coffee) => {
-        coffeeDiv.appendChild(nodeBuildCoffeeItem(coffee));
-    });
+    coffeeDiv.textContent = '';
+    let i = 0;
+    console.log(coffees[i]);
+    let interval = setInterval(function () {
+        console.log(coffees[i]);
+        if (i === coffees.length - 1) clearInterval(interval);
+        nodeBuildCoffeeItem(coffees[i]);
+        i++;
+    }, 150);
 }
+
 
 /** things that are run when page first loads go under here
  */
