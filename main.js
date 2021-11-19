@@ -1,26 +1,5 @@
 "use strict"
 
-// it returns html code that displays ONE coffee's info in a div, name in <h4> and roast in <p>
-// this function is run by renderCoffees
-function renderCoffee(coffee) {
-    // each list in the list of of coffees we will display is simply going to be sent back as
-    // <div class="coffee"><h4>*COFFEE NAME*</h4> <p>*COFFEE ROAST*</p></div>
-    let html = '<div class="coffee">';
-    html += '<h4 class="coffee-name">' + coffee.name + '</h4> ';
-    html += '<p class="coffee-roast">' + coffee.roast + '</p>';
-    html += '</div>'
-    return html;
-}
-
-// this function puts together all the new html code for displaying a table in the web page
-function renderCoffees(coffees) {
-    var html = '';
-    for (var i = 0; i < coffees.length; i++) {
-        html += renderCoffee(coffees[i]);
-    }
-    return html;
-}
-
 function updateCoffees(e) {
     // e calls back to the event manager and is connected form submission
     e.preventDefault(); // don't submit the form, we just want to update the data
@@ -42,8 +21,7 @@ function updateCoffees(e) {
     nodeBuildCoffeeList(filteredCoffees);
 }
 
-/** new functions go under here
- */
+/** new functions go under here **/
 
 /** The matchRoast function takes a coffee object and a roast string and compares them, returning a
  * boolean value corresponding to the two parameter's matching. Additionally, it exits early if the value
@@ -108,7 +86,7 @@ function addCoffee(e) {
 function addCoffeeToStorage(id, name, roast) {
     // localStorage only allows strings to be given to it, so in order to prevent key collisions
     // and retain meaningful key names, we are using string template literals. They require a backtick (`)
-    // instead of quotes or doublequotes ('/") and we can dynamically change their content with ${*variable*}
+    // instead of quotes or doublequotes ('/") and we can dynamically change their content with ${<var>}
     localStorage.setItem(`${id}_id`, id);
     localStorage.setItem(`${id}_name`, name);
     localStorage.setItem(`${id}_roast`, roast);
@@ -134,7 +112,7 @@ function getLocalCoffeeData() {
             coffees.push(loadCoffee); // get that coffee in there!
         }
     } else {
-        console.log("Malformed data in localStorage:", localStorage)
+        console.log("Malformed data in localStorage:", localStorage);
     }
 }
 
@@ -147,6 +125,7 @@ function getLocalCoffeeData() {
 function nodeBuildCoffeeItem(coffee) {
     let newDiv = document.createElement("DIV");
     newDiv.className = "coffee";
+    newDiv.id = `${coffee.id}_coffee`; // this doesn't really do much but can be used to lookup these new divs by id
     let newH4 = document.createElement("H4");
     newH4.className = "coffee-name";
     newH4.innerText = coffee.name;
@@ -156,14 +135,7 @@ function nodeBuildCoffeeItem(coffee) {
     newDiv.appendChild(newH4);
     newDiv.appendChild(newP);
 
-    coffeeDiv.childNodes.forEach((div) => {
-        if (newDiv.isEqualNode(div)) {
-            newDiv.textContent = ''
-        }
-    });
-
-
-    coffeeDiv.appendChild(newDiv);
+    return newDiv;
 }
 
 /** nodeBuildCoffeeList is the equivalent of the renderCoffees function in the original project. Thanks to
@@ -173,17 +145,16 @@ function nodeBuildCoffeeItem(coffee) {
  * @param coffees           an array of coffee objects
  */
 function nodeBuildCoffeeList(coffees) {
-    coffeeDiv.textContent = '';
+    if (coffeeDiv.childNodes.length > 0) {
+        coffeeDiv.textContent = '';
+    }
     let i = 0;
-    console.log(coffees[i]);
     let interval = setInterval(function () {
-        console.log(coffees[i]);
-        if (i === coffees.length - 1) clearInterval(interval);
-        nodeBuildCoffeeItem(coffees[i]);
+            if (i === coffees.length - 1) clearInterval(interval);
+            coffeeDiv.appendChild(nodeBuildCoffeeItem(coffees[i]));
         i++;
     }, 150);
 }
-
 
 /** things that are run when page first loads go under here
  */
@@ -214,7 +185,6 @@ var coffees = [
 // this contains the html element we are going to display the "list" of coffees with
 const coffeeDiv = document.querySelector('#coffee-display-container');
 // this is the button with the event listener which calls the updateCoffees function
-// const submitButton = document.querySelector('#submit'); (deprecated)
 // this is the roast options dropdown element
 const roastSelection = document.querySelector('#roast-selection');
 
@@ -225,16 +195,16 @@ const nameSearch = document.querySelector('#name-search');
 getLocalCoffeeData();
 
 // this line initially fills the table with ALL coffees
-// coffeeDiv.innerHTML = renderCoffees(coffees);
 nodeBuildCoffeeList(coffees);
 
 // replaced submit button with active filtering when input in either field is changed
 roastSelection.addEventListener('input', updateCoffees);
 nameSearch.addEventListener('input', updateCoffees);
 
-// add a coffee form DOM linkups below here
+// 'add a coffee' form DOM linkups below here
 const roastAdd = document.querySelector('#roast-add');
 const nameAdd = document.querySelector('#name-add');
 const newCoffeeSubmit = document.querySelector('#submit-add');
 
+// this runs the 'add a coffee' routine
 newCoffeeSubmit.addEventListener('click', addCoffee);
