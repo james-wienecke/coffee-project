@@ -1,8 +1,11 @@
 "use strict"
 
+/** updateCoffees is the main way our coffee list gets updated to filter for user input. It's setup to only take
+ *  events from 'input' eventListeners, when it will save the contents of both primary inputs to corresponding
+ *  variables. It then creates a bucket array that will be used to store matches from the main coffees array so
+ *  that these whitelisted coffee objects can be sent to our render pipeline and get those matches out for users.
+ */
 function updateCoffees(e) {
-    // e calls back to the event manager and is connected form submission
-    e.preventDefault(); // don't submit the form, we just want to update the data
     // roastSelection is given values to present the user in the html page and this data is then
     // sent into the javascript application by this variable assignment.
     var selectedRoast = roastSelection.value;
@@ -16,8 +19,7 @@ function updateCoffees(e) {
             filteredCoffees.push(coffee);
         }
     });
-    // this sets the coffee display div to display the coffees currently matching the criteria (all at first)
-    // coffeeDiv.innerHTML = renderCoffees(filteredCoffees);
+    // we need to build up a new node tree for the document so that our chosen coffee objects will be displayed
     nodeBuildCoffeeList(filteredCoffees);
 }
 
@@ -69,7 +71,6 @@ function addCoffee(e) {
     coffees.push(newCoffee);
     document.querySelector('#add-form').reset();
     document.querySelector('#search-form').reset();
-    // coffeeDiv.innerHTML = renderCoffees(coffees);
     nodeBuildCoffeeList(coffees);
 }
 
@@ -124,14 +125,19 @@ function getLocalCoffeeData() {
  * @param coffee            a single coffee object from the global coffees array
  */
 function nodeBuildCoffeeItem(coffee) {
+    // this new div will be the main container for our individual coffee list items
     let newDiv = document.createElement("DIV");
-    newDiv.className = "coffee d-flex justify-content-between border";
+    newDiv.className = "coffee d-flex justify-content-between border"; //bootstrap and css styling
+
     let newH4 = document.createElement("H4");
-    newH4.className = "coffee-name mb-0";
+    newH4.className = "coffee-name mb-0"; //bootstrap and css styling
     newH4.innerText = coffee.name;
+
     let newP = document.createElement("P");
-    newP.className = `coffee-roast my-auto ${coffee.roast}-roast`;
+    newP.className = `coffee-roast my-auto ${coffee.roast}-roast`; //bootstrap and css styling
     newP.innerText = coffee.roast;
+
+    // our node's elements are prepared, lets add them to their own little prepared flex container
     newDiv.appendChild(newH4);
     newDiv.appendChild(newP);
 
@@ -149,6 +155,7 @@ function nodeBuildCoffeeList(coffees) {
         coffeeDiv.textContent = '';
     }
     let i = 0;
+    // we can get a nice fade-in cascade effect by using an interval instead of a normal loop :)
     let interval = setInterval(function () {
             if (i === coffees.length - 1) clearInterval(interval);
             coffeeDiv.appendChild(nodeBuildCoffeeItem(coffees[i]));
@@ -184,7 +191,6 @@ var coffees = [
 
 // this contains the html element we are going to display the "list" of coffees with
 const coffeeDiv = document.querySelector('#coffee-display-container');
-// this is the button with the event listener which calls the updateCoffees function
 // this is the roast options dropdown element
 const roastSelection = document.querySelector('#roast-selection');
 
