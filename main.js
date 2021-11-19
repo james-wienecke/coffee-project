@@ -5,20 +5,20 @@
  *  variables. It then creates a bucket array that will be used to store matches from the main coffees array so
  *  that these whitelisted coffee objects can be sent to our render pipeline and get those matches out for users.
  */
-function updateCoffees(e) {
+function updateCoffees() {
     // roastSelection is given values to present the user in the html page and this data is then
     // sent into the javascript application by this variable assignment.
-    var selectedRoast = roastSelection.value;
+    const selectedRoast = roastSelection.value;
     // this string contains the coffee name we wish to match with
-    let selectedName = nameSearch.value;
+    const selectedName = nameSearch.value;
     // filteredCoffees is created here empty and will be filled with coffees with data matching
-    var filteredCoffees = [];
-    //                          coffee here is just a selector for each element inside coffeeS which is defined below
-    coffees.forEach(function (coffee) {
+    let filteredCoffees = [];
+
+    for (const coffee of coffees) {
         if (matchRoast(coffee, selectedRoast) && matchName(coffee, selectedName)) {
             filteredCoffees.push(coffee);
         }
-    });
+    }
     // we need to build up a new node tree for the document so that our chosen coffee objects will be displayed
     nodeBuildCoffeeList(filteredCoffees);
 }
@@ -42,7 +42,7 @@ function matchRoast(coffee, roast) {
  * boolean value corresponding to the two parameter's matching. If the indexOf() method returns, -1,
  * the search criteria the user specified does not match the coffee object currently being evaluated.
  * Any result larger than -1 is considered a partial match, and the function returns true. Additionally,
- * this function exits early if the search string is empty, to allow for pure roast filtering.
+ * this function exits early if the search string is empty, to allow for pure filtering by roast.
  *
  * @param coffee            object, contains an id number, a name string, and a roast string
  * @param search            string, can be either any of the coffee roast values or 'all roasts'
@@ -62,11 +62,11 @@ function matchName(coffee, search) {
  */
 function addCoffee(e) {
     e.preventDefault(); // DON'T submit form
-    let newCoffee = {
+    const newCoffee = {
         id: coffees.length + 1,
         name: nameAdd.value,
         roast: roastAdd.value
-    }
+    };
     addCoffeeToStorage(newCoffee.id, newCoffee.name, newCoffee.roast);
     coffees.push(newCoffee);
     document.querySelector('#add-form').reset();
@@ -87,7 +87,7 @@ function addCoffee(e) {
 function addCoffeeToStorage(id, name, roast) {
     // localStorage only allows strings to be given to it, so in order to prevent key collisions
     // and retain meaningful key names, we are using string template literals. They require a backtick (`)
-    // instead of quotes or doublequotes ('/") and we can dynamically change their content with ${<var>}
+    // instead of quotes or double-quotes ('/") and we can dynamically change their content with ${<var>}
     localStorage.setItem(`${id}_id`, id);
     localStorage.setItem(`${id}_name`, name);
     localStorage.setItem(`${id}_roast`, roast);
@@ -105,35 +105,37 @@ function getLocalCoffeeData() {
         // we load saved coffee in batches of 3 key:value pairs
         for(let i = 0; i < (localStorage.length / 3); i++) {
             let loadCoffee = {
-                id: localStorage.getItem(`${idLookup}_id`),
+                id: parseFloat(localStorage.getItem(`${idLookup}_id`)),
                 name: localStorage.getItem(`${idLookup}_name`),
                 roast: localStorage.getItem(`${idLookup}_roast`)
-            }
+            };
             idLookup++; // we need to increment our id lookup to access the next coffee's data
             coffees.push(loadCoffee); // get that coffee in there!
         }
     } else {
         console.log("Malformed data in localStorage:", localStorage);
     }
+    // very unnecessary but just makes double extra sure our coffee array is always sorted in ascending order
     coffees.sort((x, y) => (x.id > y.id) ? 1 : -1);
 }
 
 /** nodeBuildCoffeeItem is essentially equivalent to "renderCoffee" in the original project, but has been tweaked
  * to allow a new node-based approach. This process is much more granular and allows fine control of the list
- * population (ie. does not require the entire element to be built at once)
+ * population (ie. does not require the entire element to be built at once).
  *
  * @param coffee            a single coffee object from the global coffees array
+ * @returns newDiv          a document node
  */
 function nodeBuildCoffeeItem(coffee) {
     // this new div will be the main container for our individual coffee list items
-    let newDiv = document.createElement("DIV");
+    const newDiv = document.createElement("DIV");
     newDiv.className = "coffee d-flex justify-content-between border"; //bootstrap and css styling
 
-    let newH4 = document.createElement("H4");
+    const newH4 = document.createElement("H4");
     newH4.className = "coffee-name mb-0"; //bootstrap and css styling
     newH4.innerText = coffee.name;
 
-    let newP = document.createElement("P");
+    const newP = document.createElement("P");
     newP.className = `coffee-roast my-auto ${coffee.roast}-roast`; //bootstrap and css styling
     newP.innerText = coffee.roast;
 
@@ -156,11 +158,15 @@ function nodeBuildCoffeeList(coffees) {
     }
     let i = 0;
     // we can get a nice fade-in cascade effect by using an interval instead of a normal loop :)
-    let interval = setInterval(function () {
+    if (pref_enableAnimation) {
+        let interval = setInterval(function () {
             if (i === coffees.length - 1) clearInterval(interval);
             coffeeDiv.appendChild(nodeBuildCoffeeItem(coffees[i]));
-        i++;
-    }, 150);
+            i++;
+        }, 150);
+    } else { // pref_enableAnimation being set to false lets us skip the cascade effect
+        for (const coffee of coffees) coffeeDiv.appendChild(nodeBuildCoffeeItem(coffee));
+    }
 }
 
 /** things that are run when page first loads go under here
@@ -172,7 +178,7 @@ function nodeBuildCoffeeList(coffees) {
 // name:     <string>
 // roast:    <string>
 // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
-var coffees = [
+let coffees = [
     {id: 1, name: 'Light City', roast: 'light'},
     {id: 2, name: 'Half City', roast: 'light'},
     {id: 3, name: 'Cinnamon', roast: 'light'},
@@ -196,6 +202,9 @@ const roastSelection = document.querySelector('#roast-selection');
 
 // this is the text field for searching by name
 const nameSearch = document.querySelector('#name-search');
+
+// the little fadein animation can be bypassed by setting this to false
+let pref_enableAnimation = true;
 
 // check window.localStorage for coffees to load
 getLocalCoffeeData();
