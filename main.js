@@ -10,7 +10,7 @@ $(document).ready(function () {
     // name:     <string>
     // roast:    <string>
     // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
-    let coffees = [
+    const coffees = [
         {id: 1, name: 'Light City', roast: 'light'},
         {id: 2, name: 'Half City', roast: 'light'},
         {id: 3, name: 'Cinnamon', roast: 'light'},
@@ -27,7 +27,7 @@ $(document).ready(function () {
         {id: 14, name: 'French', roast: 'dark'},
     ];
     // this contains the html element we are going to display the "list" of coffees with
-    const coffeeDiv = $('#coffee-display-container').get(0);
+    const $coffeeDiv = $('#coffee-display-container');
     // this is the roast options dropdown element
     const $roastSelection = $('#roast-selection');
 
@@ -35,7 +35,7 @@ $(document).ready(function () {
     const $nameSearch = $('#name-search');
 
     // the little fadein animation can be bypassed by setting this to false
-    let pref_enableAnimation = true;
+    let pref_enableAnimation = false;
 
     // check window.localStorage for coffees to load
     getLocalCoffeeData();
@@ -214,19 +214,17 @@ function nodeBuildCoffeeItem(coffee) {
  * @param coffees           an array of coffee objects
  */
 function nodeBuildCoffeeList(coffees) {
-    if (coffeeDiv.childNodes.length > 0) {
-        coffeeDiv.textContent = '';
-    }
+    $coffeeDiv.empty();
     let i = 0;
     // we can get a nice fade-in cascade effect by using an interval instead of a normal loop :)
     if (pref_enableAnimation) {
         let interval = setInterval(function () {
             if (i === coffees.length - 1) clearInterval(interval);
-            coffeeDiv.appendChild(nodeBuildCoffeeItem(coffees[i]));
+            $coffeeDiv.get(0).appendChild(nodeBuildCoffeeItem(coffees[i]));
             i++;
         }, 150);
     } else { // pref_enableAnimation being set to false lets us skip the cascade effect
-        for (const coffee of coffees) coffeeDiv.appendChild(nodeBuildCoffeeItem(coffee));
+        for (const coffee of coffees) $coffeeDiv.get(0).appendChild(nodeBuildCoffeeItem(coffee));
     }
 }
 });
