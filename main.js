@@ -1,5 +1,66 @@
 "use strict"
 
+$(document).ready(function () {
+    /** things that are run when page first loads go under here
+     */
+
+    // this is the list of coffees and their data
+    // it is an array of objects which have this structure:
+    // id:       <number>
+    // name:     <string>
+    // roast:    <string>
+    // from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
+    const coffees = [
+        {id: 1, name: 'Light City', roast: 'light'},
+        {id: 2, name: 'Half City', roast: 'light'},
+        {id: 3, name: 'Cinnamon', roast: 'light'},
+        {id: 4, name: 'City', roast: 'medium'},
+        {id: 5, name: 'American', roast: 'medium'},
+        {id: 6, name: 'Breakfast', roast: 'medium'},
+        {id: 7, name: 'High', roast: 'dark'},
+        {id: 8, name: 'Continental', roast: 'dark'},
+        {id: 9, name: 'New Orleans', roast: 'dark'},
+        {id: 10, name: 'European', roast: 'dark'},
+        {id: 11, name: 'Espresso', roast: 'dark'},
+        {id: 12, name: 'Viennese', roast: 'dark'},
+        {id: 13, name: 'Italian', roast: 'dark'},
+        {id: 14, name: 'French', roast: 'dark'},
+    ];
+    // this contains the html element we are going to display the "list" of coffees with
+    const $coffeeDiv = $('#coffee-display-container');
+    // this is the roast options dropdown element
+    const $roastSelection = $('#roast-selection');
+
+    // this is the text field for searching by name
+    const $nameSearch = $('#name-search');
+
+    // the little fadein animation can be bypassed by setting this to false
+    let pref_enableAnimation = false;
+
+    // check window.localStorage for coffees to load
+    getLocalCoffeeData();
+
+    // this line initially fills the table with ALL coffees
+    nodeBuildCoffeeList(coffees);
+
+    // replaced submit button with active filtering when input in either field is changed
+    // roastSelection.addEventListener('input', updateCoffees);
+    $roastSelection.on('change', function () {
+        updateCoffees();
+    });
+    // nameSearch.addEventListener('input', updateCoffees);
+    $nameSearch.on('input', function () {
+        updateCoffees();
+    });
+
+    // 'add a coffee' form DOM linkups below here
+    const roastAdd = document.querySelector('#roast-add');
+    const nameAdd = document.querySelector('#name-add');
+    const newCoffeeSubmit = document.querySelector('#submit-add');
+
+    // this runs the 'add a coffee' routine
+    newCoffeeSubmit.addEventListener('click', addCoffee);
+
 /** updateCoffees is the main way our coffee list gets updated to filter for user input. It's setup to only take
  *  events from 'input' eventListeners, when it will save the contents of both primary inputs to corresponding
  *  variables. It then creates a bucket array that will be used to store matches from the main coffees array so
@@ -8,9 +69,9 @@
 function updateCoffees() {
     // roastSelection is given values to present the user in the html page and this data is then
     // sent into the javascript application by this variable assignment.
-    const selectedRoast = roastSelection.value;
+    const selectedRoast = $('#roast-selection option:selected').text();
     // this string contains the coffee name we wish to match with
-    const selectedName = nameSearch.value;
+    const selectedName = $nameSearch.val();
     // filteredCoffees is created here empty and will be filled with coffees with data matching
     let filteredCoffees = [];
 
@@ -153,73 +214,17 @@ function nodeBuildCoffeeItem(coffee) {
  * @param coffees           an array of coffee objects
  */
 function nodeBuildCoffeeList(coffees) {
-    if (coffeeDiv.childNodes.length > 0) {
-        coffeeDiv.textContent = '';
-    }
+    $coffeeDiv.empty();
     let i = 0;
     // we can get a nice fade-in cascade effect by using an interval instead of a normal loop :)
     if (pref_enableAnimation) {
         let interval = setInterval(function () {
             if (i === coffees.length - 1) clearInterval(interval);
-            coffeeDiv.appendChild(nodeBuildCoffeeItem(coffees[i]));
+            $coffeeDiv.get(0).appendChild(nodeBuildCoffeeItem(coffees[i]));
             i++;
         }, 150);
     } else { // pref_enableAnimation being set to false lets us skip the cascade effect
-        for (const coffee of coffees) coffeeDiv.appendChild(nodeBuildCoffeeItem(coffee));
+        for (const coffee of coffees) $coffeeDiv.get(0).appendChild(nodeBuildCoffeeItem(coffee));
     }
 }
-
-/** things that are run when page first loads go under here
- */
-
-// this is the list of coffees and their data
-// it is an array of objects which have this structure:
-// id:       <number>
-// name:     <string>
-// roast:    <string>
-// from http://www.ncausa.org/About-Coffee/Coffee-Roasts-Guide
-let coffees = [
-    {id: 1, name: 'Light City', roast: 'light'},
-    {id: 2, name: 'Half City', roast: 'light'},
-    {id: 3, name: 'Cinnamon', roast: 'light'},
-    {id: 4, name: 'City', roast: 'medium'},
-    {id: 5, name: 'American', roast: 'medium'},
-    {id: 6, name: 'Breakfast', roast: 'medium'},
-    {id: 7, name: 'High', roast: 'dark'},
-    {id: 8, name: 'Continental', roast: 'dark'},
-    {id: 9, name: 'New Orleans', roast: 'dark'},
-    {id: 10, name: 'European', roast: 'dark'},
-    {id: 11, name: 'Espresso', roast: 'dark'},
-    {id: 12, name: 'Viennese', roast: 'dark'},
-    {id: 13, name: 'Italian', roast: 'dark'},
-    {id: 14, name: 'French', roast: 'dark'},
-];
-
-// this contains the html element we are going to display the "list" of coffees with
-const coffeeDiv = document.querySelector('#coffee-display-container');
-// this is the roast options dropdown element
-const roastSelection = document.querySelector('#roast-selection');
-
-// this is the text field for searching by name
-const nameSearch = document.querySelector('#name-search');
-
-// the little fadein animation can be bypassed by setting this to false
-let pref_enableAnimation = true;
-
-// check window.localStorage for coffees to load
-getLocalCoffeeData();
-
-// this line initially fills the table with ALL coffees
-nodeBuildCoffeeList(coffees);
-
-// replaced submit button with active filtering when input in either field is changed
-roastSelection.addEventListener('input', updateCoffees);
-nameSearch.addEventListener('input', updateCoffees);
-
-// 'add a coffee' form DOM linkups below here
-const roastAdd = document.querySelector('#roast-add');
-const nameAdd = document.querySelector('#name-add');
-const newCoffeeSubmit = document.querySelector('#submit-add');
-
-// this runs the 'add a coffee' routine
-newCoffeeSubmit.addEventListener('click', addCoffee);
+});
