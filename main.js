@@ -35,7 +35,7 @@ $(document).ready(function () {
     const $nameSearch = $('#name-search');
 
     // the little fadein animation can be bypassed by setting this to false
-    let pref_enableAnimation = true;
+    let pref_enableAnimation = false;
 
     // check window.localStorage for coffees to load
     getLocalCoffeeData();
@@ -206,24 +206,32 @@ function nodeBuildCoffeeItem(coffee) {
     // this new div will be the main container for our individual coffee list items
     // const newDiv = document.createElement("DIV");
     const newDiv = $(document.createElement('div'));
-    newDiv.className = "coffee d-flex justify-content-between border"; //bootstrap and css styling
+    // newDiv.className = "coffee d-flex justify-content-between border"; //bootstrap and css styling
+    newDiv.addClass("coffee d-flex justify-content-between border")
 
     // const newH4 = document.createElement("H4");
     const newH4 = $(document.createElement("h4"));
 
-    newH4.className = "coffee-name mb-0"; //bootstrap and css styling
+    // newH4.className = "coffee-name mb-0"; //bootstrap and css styling
     // newH4.innerText = coffee.name;
-
+    newH4.addClass("coffee-name mb-0")
+    newH4.text(coffee.name);
+    console.log(newH4);
 
     // const newP = document.createElement("P");
     const newP = $(document.createElement("P"));
 
-    newP.className = `coffee-roast my-auto ${coffee.roast}-roast`; //bootstrap and css styling
-    newP.innerText = coffee.roast;
+    // newP.className = `coffee-roast my-auto ${coffee.roast}-roast`; //bootstrap and css styling
+    newP.addClass(`coffee-roast my-auto ${coffee.roast}-roast`)
+    // newP.innerText = coffee.roast;
+    newP.text(coffee.roast)
+    console.log(newP);
 
     // our node's elements are prepared, lets add them to their own little prepared flex container
     newDiv.append(newH4);
     newDiv.append(newP);
+
+    console.log(newDiv);
 
     return newDiv;
 }
@@ -241,11 +249,11 @@ function nodeBuildCoffeeList(coffees) {
         let i = 0;
         let interval = setInterval(function () {
             if (i === coffees.length - 1) clearInterval(interval);
-            $coffeeDiv.get(0).append(nodeBuildCoffeeItem(coffees[i]));
+            $coffeeDiv.append(nodeBuildCoffeeItem(coffees[i]));
             i++;
         }, 150);
     } else { // pref_enableAnimation being set to false lets us skip the cascade effect
-        for (const coffee of coffees) $coffeeDiv.get(0).append(nodeBuildCoffeeItem(coffee));
+        for (const coffee of coffees) $coffeeDiv.append(nodeBuildCoffeeItem(coffee));
     }
 }
 });
