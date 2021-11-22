@@ -1,5 +1,8 @@
 "use strict"
 
+// the little fadein animations can be bypassed by setting this to false
+let pref_enableAnimation = true;
+
 $(document).ready(function () {
     /** things that are run when page first loads go under here
      */
@@ -33,9 +36,6 @@ $(document).ready(function () {
 
     // this is the text field for searching by name
     const $nameSearch = $('#name-search');
-
-    // the little fadein animation can be bypassed by setting this to false
-    let pref_enableAnimation = false;
 
     // check window.localStorage for coffees to load
     getLocalCoffeeData();
@@ -226,58 +226,30 @@ function nodeBuildCoffeeItem(coffee) {
 
 /** nodeBuildCoffeeList is the equivalent of the renderCoffees function in the original project. Thanks to
  * using a node-based system, this function can achieve cool things (such as adding a small delay before
- * each coffee is put into the list)
+ * each coffee is put into the list).
  *
  * @param coffees           an array of coffee objects
  */
 function nodeBuildCoffeeList(coffees) {
-    // $coffeeDiv.empty();
-    // we can get a nice fade-in cascade effect by using an interval instead of a normal loop :)
-    // if (pref_enableAnimation) {
-    //     let i = 0;
-    //     let interval = setInterval(function () {
-    //         if (i === coffees.length - 1) clearInterval(interval);
-    //         $coffeeDiv.append(nodeBuildCoffeeItem(coffees[i]));
-    //         i++;
-    //     }, 150);
-    // } else { // pref_enableAnimation being set to false lets us skip the cascade effect
-    //     for (const coffee of coffees) $coffeeDiv.append(nodeBuildCoffeeItem(coffee));
-    // }
-
     // new jQuery implementation of list building!
     // here we create an array to be filled with jquery objects of coffee elements whose properties match the filter
     let newCoffees = [];
     for (const coffee of coffees) {
         newCoffees.push(nodeBuildCoffeeItem(coffee));
     }
-    // let waitForList = function (coffeesList, appendNewCoffees) {
-    //     if(coffeesList.length === coffees.length) {
-    //         appendNewCoffees();
-    //     } else {
-    //         waitForList(coffeesList, appendNewCoffees);
-    //     }
-    // }
-    // waitForList(newCoffees, appendNewCoffees);
-    // function appendNewCoffees () {
-    //     console.log('newCoffees', newCoffees)
-    //     console.log('newCoffees child nodes', newCoffees);
-    //     console.log('newCoffees child nodes length', newCoffees.length);
-    //     newCoffees.forEach(function (elem, index) {
-    //         console.log('append child:', elem);
-    //         $coffeeDiv.append(elem.hide());
-    //     });
-    //
-    //     fadeInChildren($coffeeDiv.get(0))
-    // }
-    // appendNewCoffees();
 
+    // here we append the new list of elements to the page's coffeeDiv element
     newCoffees.forEach(function (elem, index) {
-        $coffeeDiv.append(elem.hide());
+        // by using elem.hide() we initially hide the new elements to allow for them to be faded in after
+        // skip the hiding when animation is disabled
+        (pref_enableAnimation) ? $coffeeDiv.append(elem.hide()) : $coffeeDiv.append(elem);
     });
 
-    $coffeeDiv.children().each(function (index) {
-        $(this).delay(100*index).fadeIn(100);
-    });
-
+    if (pref_enableAnimation) {
+        // here we go through each of coffeeDiv's children and fade them in according to a delayed index process
+        $coffeeDiv.children().each(function (index) {
+            $(this).delay(150*index).fadeIn(200);
+        });
+    }
 }
 });
