@@ -205,7 +205,7 @@ function getLocalCoffeeData() {
 function nodeBuildCoffeeItem(coffee) {
     // this new div will be the main container for our individual coffee list items
     const newDiv = $(document.createElement('div'));
-    newDiv.addClass("coffee d-flex justify-content-between border")
+    newDiv.addClass("coffee justify-content-between border")
 
     const newH4 = $(document.createElement("h4"));
 
@@ -244,17 +244,19 @@ function nodeBuildCoffeeList(coffees) {
     //     for (const coffee of coffees) $coffeeDiv.append(nodeBuildCoffeeItem(coffee));
     // }
 
-    let newCoffees = $(document.createElement('div'));
+    // let newCoffees = $(document.createElement('div'));
+    let newCoffees = [];
     for (const coffee of coffees) {
         // $coffeeDiv.hide().append(nodeBuildCoffeeItem(coffee)).fadeIn();
-        newCoffees.append(nodeBuildCoffeeItem(coffee));
+        // newCoffees.append(nodeBuildCoffeeItem(coffee));
+        newCoffees.push(nodeBuildCoffeeItem(coffee));
         // console.log('new', newCoffees.get(0).childNodes.length);
-        // console.log('coffees length', coffees.length);
+        console.log('coffees length', coffees.length);
+        console.log(newCoffees);
     }
-    console.log(newCoffees.length);
     let waitForList = function (coffeesList, appendNewCoffees) {
-        if(coffeesList.get(0).childNodes.length === coffees.length) {
-            console.log(coffeesList.get(0).childNodes)
+        if(coffeesList.length === coffees.length) {
+            console.log(coffeesList)
             appendNewCoffees();
         } else {
             waitForList(coffeesList, appendNewCoffees);
@@ -264,17 +266,31 @@ function nodeBuildCoffeeList(coffees) {
 
     function appendNewCoffees () {
         console.log('newCoffees', newCoffees)
-        console.log('newCoffees child nodes', newCoffees.get(0).childNodes);
-        console.log('newCoffees child nodes length', newCoffees.get(0).childNodes.length);
-        // newCoffees.get(0).childNodes.forEach(function (elem, index) {
-        //     console.log('append child:', elem);
-        //     $coffeeDiv.append(elem);
-        // });
-        for (let i = 0; i < newCoffees.get(0).childNodes.length; i++) {
-            console.log('append child:', newCoffees.get(0).childNodes[i]);
-            $coffeeDiv.append(newCoffees.get(0).childNodes[i]);
-        }
+        console.log('newCoffees child nodes', newCoffees);
+        console.log('newCoffees child nodes length', newCoffees.length);
+        newCoffees.forEach(function (elem, index) {
+            console.log('append child:', elem);
+            $coffeeDiv.append(elem.hide());
+        });
+        // for (let i = 0; i < newCoffees.get(0).childNodes.length; i++) {
+        //     console.log('append child:', newCoffees.get(0).childNodes[i]);
+        //     $coffeeDiv.append(newCoffees.get(0).childNodes[i]);
+        // }
         console.log($coffeeDiv)
+        console.log($coffeeDiv.get(0).childNodes.length)
+        // $coffeeDiv.children().each(function(index) {
+        //     $(this).delay(400*index).fadeIn(300);
+        // });
+        fadeInChildren($coffeeDiv.get(0))
+        // fadeChildrenIn($coffeeDiv.get(0).childNodes.length);
+    }
+
+    function fadeInChildren(parent) {
+        let elems = $(parent).children();
+
+        $(elems).each(function(index) {
+            $(this).delay(100*index).fadeIn(100);
+        });
     }
 }
 });
