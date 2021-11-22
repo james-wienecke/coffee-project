@@ -65,7 +65,6 @@ $(document).ready(function () {
  *  that these whitelisted coffee objects can be sent to our render pipeline and get those matches out for users.
  */
 function updateCoffees() {
-    $coffeeDiv.empty();
     // roastSelection is given values to present the user in the html page and this data is then
     // sent into the javascript application by this variable assignment.
     const selectedRoast = $('#roast-selection option:selected').text();
@@ -218,6 +217,7 @@ function nodeBuildCoffeeItem(coffee) {
  * @param coffees           an array of coffee objects
  */
 function nodeBuildCoffeeList(coffees) {
+    $coffeeDiv.empty();
     // new jQuery implementation of list building!
     // here we create an array to be filled with jquery objects of coffee elements whose properties match the filter
     let newCoffees = [];
