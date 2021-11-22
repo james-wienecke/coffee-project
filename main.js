@@ -1,7 +1,7 @@
 "use strict"
 
 // the little fadein animations can be bypassed by setting this to false
-let pref_enableAnimation = true;
+let pref_enableAnimation = true;    // deliberately scoped here to allow user access
 
 $(document).ready(function () {
     /** things that are run when page first loads go under here
@@ -43,26 +43,12 @@ $(document).ready(function () {
     // this line initially fills the table with ALL coffees
     nodeBuildCoffeeList(coffees);
 
-    let listIsBuilding = false;
-    // replaced submit button with active filtering when input in either field is changed
-    // roastSelection.addEventListener('input', updateCoffees);
-    $roastSelection.on('change', function (event) {
-        // event.stopPropagation();
-        if (listIsBuilding) {
-            return false;
-        } else {
+    // filter updates automatically and redraws coffee list when any input method changes
+    $roastSelection.on('change', function () {
             updateCoffees();
-        }
-
     });
-    // nameSearch.addEventListener('input', updateCoffees);
-    $nameSearch.on('input', function (event) {
-        // event.stopPropagation();
-        if (listIsBuilding) {
-            return false;
-        } else {
+    $nameSearch.on('input', function () {
             updateCoffees();
-        }
     });
 
     // 'add a coffee' form DOM linkups below here
@@ -80,7 +66,6 @@ $(document).ready(function () {
  */
 function updateCoffees() {
     $coffeeDiv.empty();
-    listIsBuilding = true;
     // roastSelection is given values to present the user in the html page and this data is then
     // sent into the javascript application by this variable assignment.
     const selectedRoast = $('#roast-selection option:selected').text();
@@ -96,7 +81,6 @@ function updateCoffees() {
     }
     // we need to build up a new node tree for the document so that our chosen coffee objects will be displayed
     nodeBuildCoffeeList(filteredCoffees);
-    listIsBuilding = false;
 }
 
 /** new functions go under here **/
@@ -199,29 +183,32 @@ function getLocalCoffeeData() {
  * to allow a new node-based approach. This process is much more granular and allows fine control of the list
  * population (ie. does not require the entire element to be built at once).
  *
- * @param coffee            a single coffee object from the global coffees array
+ * @param coffee            a single coffee object
  * @returns newDiv          a document node
  */
 function nodeBuildCoffeeItem(coffee) {
-    // this new div will be the main container for our individual coffee list items
-    const newDiv = $(document.createElement('div'));
-    newDiv.addClass("coffee justify-content-between border")
+    const newH4 = $(document.createElement("h4"))
+        .addClass("coffee-name mb-0")
+        .text(coffee.name);
 
-    const newH4 = $(document.createElement("h4"));
+    const newP = $(document.createElement("P"))
+        .addClass(`coffee-roast my-auto ${coffee.roast}-roast`)
+        .text(coffee.roast);
 
-    newH4.addClass("coffee-name mb-0")
-    newH4.text(coffee.name);
+    // the coffee's data will be placed inside this container so that it can be displayed inline via flex
+    // we use this second div layer to allow a fade-in effect that changes display but we also want flex display
+    const newCont = $(document.createElement('div'))
+        .addClass("justify-content-between d-flex")
+        // add h4 and p to this container
+        .append(newH4)
+        .append(newP);
 
-    const newP = $(document.createElement("P"));
-
-    newP.addClass(`coffee-roast my-auto ${coffee.roast}-roast`)
-    newP.text(coffee.roast)
-
-    // our node's elements are prepared, lets add them to their own little prepared flex container
-    newDiv.append(newH4);
-    newDiv.append(newP);
-
-    return newDiv;
+    // return a final wrapper div
+    return $(document.createElement('div'))
+        // add that class for major styling selection and fade-in animation
+        .addClass("coffee border")
+        // append all of the previously created elements
+        .append(newCont);
 }
 
 /** nodeBuildCoffeeList is the equivalent of the renderCoffees function in the original project. Thanks to
@@ -237,16 +224,15 @@ function nodeBuildCoffeeList(coffees) {
     for (const coffee of coffees) {
         newCoffees.push(nodeBuildCoffeeItem(coffee));
     }
-
     // here we append the new list of elements to the page's coffeeDiv element
-    newCoffees.forEach(function (elem, index) {
+    newCoffees.forEach(function (elem) {
         // by using elem.hide() we initially hide the new elements to allow for them to be faded in after
         // skip the hiding when animation is disabled
         (pref_enableAnimation) ? $coffeeDiv.append(elem.hide()) : $coffeeDiv.append(elem);
     });
 
     if (pref_enableAnimation) {
-        // here we go through each of coffeeDiv's children and fade them in according to a delayed index process
+        // here we go through each of coffeeDiv children and fade them in according to a delayed index process
         $coffeeDiv.children().each(function (index) {
             $(this).delay(150*index).fadeIn(200);
         });

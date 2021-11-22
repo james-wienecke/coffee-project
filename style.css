@@ -33,17 +33,7 @@ h1, h2, h3, h4, h5, h6 {
 .coffee-name {
     color: var(--main-color) !important;
 }
-@keyframes append-animate {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
 .coffee {
-    /*animation: append-animate .25s ease-in;*/
-    /*display: none !important;*/
     padding: .5em;
 }
 .coffee:nth-child(odd) {
