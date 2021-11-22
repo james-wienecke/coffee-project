@@ -42,7 +42,8 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 .coffee {
-    animation: append-animate .25s ease-in;
+    /*animation: append-animate .25s ease-in;*/
+    display: none;
     padding: .5em;
 }
 .coffee:nth-child(odd) {

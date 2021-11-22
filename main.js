@@ -204,34 +204,22 @@ function getLocalCoffeeData() {
  */
 function nodeBuildCoffeeItem(coffee) {
     // this new div will be the main container for our individual coffee list items
-    // const newDiv = document.createElement("DIV");
     const newDiv = $(document.createElement('div'));
-    // newDiv.className = "coffee d-flex justify-content-between border"; //bootstrap and css styling
     newDiv.addClass("coffee d-flex justify-content-between border")
 
-    // const newH4 = document.createElement("H4");
     const newH4 = $(document.createElement("h4"));
 
-    // newH4.className = "coffee-name mb-0"; //bootstrap and css styling
-    // newH4.innerText = coffee.name;
     newH4.addClass("coffee-name mb-0")
     newH4.text(coffee.name);
-    console.log(newH4);
 
-    // const newP = document.createElement("P");
     const newP = $(document.createElement("P"));
 
-    // newP.className = `coffee-roast my-auto ${coffee.roast}-roast`; //bootstrap and css styling
     newP.addClass(`coffee-roast my-auto ${coffee.roast}-roast`)
-    // newP.innerText = coffee.roast;
     newP.text(coffee.roast)
-    console.log(newP);
 
     // our node's elements are prepared, lets add them to their own little prepared flex container
     newDiv.append(newH4);
     newDiv.append(newP);
-
-    console.log(newDiv);
 
     return newDiv;
 }
@@ -245,15 +233,48 @@ function nodeBuildCoffeeItem(coffee) {
 function nodeBuildCoffeeList(coffees) {
     // $coffeeDiv.empty();
     // we can get a nice fade-in cascade effect by using an interval instead of a normal loop :)
-    if (pref_enableAnimation) {
-        let i = 0;
-        let interval = setInterval(function () {
-            if (i === coffees.length - 1) clearInterval(interval);
-            $coffeeDiv.append(nodeBuildCoffeeItem(coffees[i]));
-            i++;
-        }, 150);
-    } else { // pref_enableAnimation being set to false lets us skip the cascade effect
-        for (const coffee of coffees) $coffeeDiv.append(nodeBuildCoffeeItem(coffee));
+    // if (pref_enableAnimation) {
+    //     let i = 0;
+    //     let interval = setInterval(function () {
+    //         if (i === coffees.length - 1) clearInterval(interval);
+    //         $coffeeDiv.append(nodeBuildCoffeeItem(coffees[i]));
+    //         i++;
+    //     }, 150);
+    // } else { // pref_enableAnimation being set to false lets us skip the cascade effect
+    //     for (const coffee of coffees) $coffeeDiv.append(nodeBuildCoffeeItem(coffee));
+    // }
+
+    let newCoffees = $(document.createElement('div'));
+    for (const coffee of coffees) {
+        // $coffeeDiv.hide().append(nodeBuildCoffeeItem(coffee)).fadeIn();
+        newCoffees.append(nodeBuildCoffeeItem(coffee));
+        // console.log('new', newCoffees.get(0).childNodes.length);
+        // console.log('coffees length', coffees.length);
+    }
+    console.log(newCoffees.length);
+    let waitForList = function (coffeesList, appendNewCoffees) {
+        if(coffeesList.get(0).childNodes.length === coffees.length) {
+            console.log(coffeesList.get(0).childNodes)
+            appendNewCoffees();
+        } else {
+            waitForList(coffeesList, appendNewCoffees);
+        }
+    }
+    waitForList(newCoffees, appendNewCoffees);
+
+    function appendNewCoffees () {
+        console.log('newCoffees', newCoffees)
+        console.log('newCoffees child nodes', newCoffees.get(0).childNodes);
+        console.log('newCoffees child nodes length', newCoffees.get(0).childNodes.length);
+        // newCoffees.get(0).childNodes.forEach(function (elem, index) {
+        //     console.log('append child:', elem);
+        //     $coffeeDiv.append(elem);
+        // });
+        for (let i = 0; i < newCoffees.get(0).childNodes.length; i++) {
+            console.log('append child:', newCoffees.get(0).childNodes[i]);
+            $coffeeDiv.append(newCoffees.get(0).childNodes[i]);
+        }
+        console.log($coffeeDiv)
     }
 }
 });
