@@ -1,5 +1,8 @@
 "use strict"
 
+// the little fadein animations can be bypassed by setting this to false
+let pref_enableAnimation = true;    // deliberately scoped here to allow user access
+
 $(document).ready(function () {
     /** things that are run when page first loads go under here
      */
@@ -34,23 +37,18 @@ $(document).ready(function () {
     // this is the text field for searching by name
     const $nameSearch = $('#name-search');
 
-    // the little fadein animation can be bypassed by setting this to false
-    let pref_enableAnimation = false;
-
     // check window.localStorage for coffees to load
     getLocalCoffeeData();
 
     // this line initially fills the table with ALL coffees
     nodeBuildCoffeeList(coffees);
 
-    // replaced submit button with active filtering when input in either field is changed
-    // roastSelection.addEventListener('input', updateCoffees);
+    // filter updates automatically and redraws coffee list when any input method changes
     $roastSelection.on('change', function () {
-        updateCoffees();
+            updateCoffees();
     });
-    // nameSearch.addEventListener('input', updateCoffees);
     $nameSearch.on('input', function () {
-        updateCoffees();
+            updateCoffees();
     });
 
     // 'add a coffee' form DOM linkups below here
@@ -184,47 +182,60 @@ function getLocalCoffeeData() {
  * to allow a new node-based approach. This process is much more granular and allows fine control of the list
  * population (ie. does not require the entire element to be built at once).
  *
- * @param coffee            a single coffee object from the global coffees array
+ * @param coffee            a single coffee object
  * @returns newDiv          a document node
  */
 function nodeBuildCoffeeItem(coffee) {
-    // this new div will be the main container for our individual coffee list items
-    const newDiv = document.createElement("DIV");
-    newDiv.className = "coffee d-flex justify-content-between border"; //bootstrap and css styling
+    const newH4 = $(document.createElement("h4"))
+        .addClass("coffee-name mb-0")
+        .text(coffee.name);
 
-    const newH4 = document.createElement("H4");
-    newH4.className = "coffee-name mb-0"; //bootstrap and css styling
-    newH4.innerText = coffee.name;
+    const newP = $(document.createElement("P"))
+        .addClass(`coffee-roast my-auto ${coffee.roast}-roast`)
+        .text(coffee.roast);
 
-    const newP = document.createElement("P");
-    newP.className = `coffee-roast my-auto ${coffee.roast}-roast`; //bootstrap and css styling
-    newP.innerText = coffee.roast;
+    // the coffee's data will be placed inside this container so that it can be displayed inline via flex
+    // we use this second div layer to allow a fade-in effect that changes display but we also want flex display
+    const newCont = $(document.createElement('div'))
+        .addClass("justify-content-between d-flex")
+        // add h4 and p to this container
+        .append(newH4)
+        .append(newP);
 
-    // our node's elements are prepared, lets add them to their own little prepared flex container
-    newDiv.appendChild(newH4);
-    newDiv.appendChild(newP);
-
-    return newDiv;
+    // return a final wrapper div
+    return $(document.createElement('div'))
+        // add that class for major styling selection and fade-in animation
+        .addClass("coffee border")
+        // append all of the previously created elements
+        .append(newCont);
 }
 
 /** nodeBuildCoffeeList is the equivalent of the renderCoffees function in the original project. Thanks to
  * using a node-based system, this function can achieve cool things (such as adding a small delay before
- * each coffee is put into the list)
+ * each coffee is put into the list).
  *
  * @param coffees           an array of coffee objects
  */
 function nodeBuildCoffeeList(coffees) {
     $coffeeDiv.empty();
-    let i = 0;
-    // we can get a nice fade-in cascade effect by using an interval instead of a normal loop :)
+    // new jQuery implementation of list building!
+    // here we create an array to be filled with jquery objects of coffee elements whose properties match the filter
+    let newCoffees = [];
+    for (const coffee of coffees) {
+        newCoffees.push(nodeBuildCoffeeItem(coffee));
+    }
+    // here we append the new list of elements to the page's coffeeDiv element
+    newCoffees.forEach(function (elem) {
+        // by using elem.hide() we initially hide the new elements to allow for them to be faded in after
+        // skip the hiding when animation is disabled
+        (pref_enableAnimation) ? $coffeeDiv.append(elem.hide()) : $coffeeDiv.append(elem);
+    });
+
     if (pref_enableAnimation) {
-        let interval = setInterval(function () {
-            if (i === coffees.length - 1) clearInterval(interval);
-            $coffeeDiv.get(0).appendChild(nodeBuildCoffeeItem(coffees[i]));
-            i++;
-        }, 150);
-    } else { // pref_enableAnimation being set to false lets us skip the cascade effect
-        for (const coffee of coffees) $coffeeDiv.get(0).appendChild(nodeBuildCoffeeItem(coffee));
+        // here we go through each of coffeeDiv children and fade them in according to a delayed index process
+        $coffeeDiv.children().each(function (index) {
+            $(this).delay(150*index).fadeIn(200);
+        });
     }
 }
 });
